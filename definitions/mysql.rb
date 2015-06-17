@@ -1,0 +1,2 @@
+define :mysql do
+end

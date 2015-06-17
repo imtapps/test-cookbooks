@@ -1,0 +1,44 @@
+---
+driver:
+  name: vagrant
+  # network:
+  #   forwarded_port: { guest: 80, host: 8888 }
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: default
+    run_list:
+        - recipe[test-cookbook::hosts]
+        - recipe[opsworks-cookbooks::setup]
+        - recipe[opsworks-cookbooks::configure]
+        - recipe[opsworks-cookbooks::test_deploy]
+    attributes:
+        opsworks_cookbooks:
+            old_releases: 0
+            name: 'test_deploy'
+            domain: 'test.imtapps.com'
+
+  - name: releases
+    run_list:
+        - recipe[opsworks-cookbooks::setup]
+        - recipe[opsworks-cookbooks::configure]
+        - recipe[opsworks-cookbooks::test_deploy]
+    attributes:
+        opsworks_cookbooks:
+            old_releases: 0
+            name: 'test_deploy'
+            domain: 'test.imtapps.com'
+
+  - name: releases
+    run_list:
+        - recipe[opsworks-cookbooks::test_deploy]
+    attributes:
+        opsworks_cookbooks:
+            old_releases: 0
+            name: 'test_deploy'
+            domain: 'test.imtapps.com'

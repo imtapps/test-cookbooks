@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+    ServerName <%= node[:opsworks_cookbooks][:domain] %>
+    ServerAdmin webadmin@imtapps.com
+    WSGIScriptAlias / /var/www/<%= node[:opsworks_cookbooks][:name] %>/current/<%= node[:opsworks_cookbooks][:name] %>/wsgi.py
+    WSGIDaemonProcess <%= node[:opsworks_cookbooks][:domain] %> processes=<%= node[:opsworks_cookbooks][:apache][:wsgi][:processes] %> threads=<%= node[:opsworks_cookbooks][:apache][:wsgi][:threads] %> maximum-requests=<%= node[:opsworks_cookbooks][:apache][:wsgi][:maximum_requests] %> inactivity-timeout=<%= node[:opsworks_cookbooks][:apache][:wsgi][:inactivity_timeout] %> deadlock-timeout=<%= node[:opsworks_cookbooks][:apache][:wsgi][:deadlock_timeout] %> display-name=<%= node[:opsworks_cookbooks][:domain] %> python-path=/var/www/<%= node[:opsworks_cookbooks][:name] %>/current/virtualenv/lib/python2.7/site-packages:/var/www/<%= node[:opsworks_cookbooks][:name] %>/current
+    WSGIProcessGroup <%= node[:opsworks_cookbooks][:domain] %>
+
+    <Directory "/var/www/<%= node[:opsworks_cookbooks][:name] %>/current/<%= node[:opsworks_cookbooks][:name] %>">
+        <Files wsgi.py>
+            Order deny,allow
+            Require all granted
+        </Files>
+    </Directory>
+</VirtualHost>
