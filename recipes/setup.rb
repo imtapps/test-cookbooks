@@ -7,9 +7,20 @@ python_virtualenv '/var/www/base_virtualenv' do
   action :create
 end
 
-include_recipe "apache2::default"
-include_recipe "apache2::mod_wsgi"
-web_app 'test_deploy' do
-  template 'site.conf.erb'
-  cookbook 'opsworks-cookbooks'
+package 'apache2'
+package 'libapache2-mod-wsgi'
+
+template "/etc/apache2/sites-available/test_deploy.conf" do
+  source 'site.conf.erb'
+end
+
+execute 'a2ensite test_deploy.conf' do
+  command '/usr/sbin/a2ensite test_deploy.conf'
+  notifies :reload, 'service[apache2]'
+end
+
+service 'apache2' do
+  service_name 'apache2'
+  supports [:start, :restart, :reload, :status]
+  action [:enable, :start]
 end
